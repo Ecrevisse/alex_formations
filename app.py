@@ -209,7 +209,7 @@ if "agent" in st.session_state:
             st.markdown(prompt)
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
-        response = query(st.session_state.agent, question)
+        response = query(st.session_state.agent, prompt)
 
 
 # Display assistant response in chat message container
