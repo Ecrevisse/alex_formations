@@ -7,14 +7,3 @@ font = "sans serif"
 
 [server]
 enableStaticServing = true
-
-
-# [theme]
-# base="light"
-# primaryColor="#573666"
-# backgroundColor="#bd6161"
-# textColor="#573666"
-
-
-# [theme]
-# base="dark"
