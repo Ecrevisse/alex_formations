@@ -117,6 +117,8 @@ def rag_tool_openai(filename: str):
     Your task will be to complete the request of the user and using the provided PDF by the user.If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise
 
     Remember it's very important your answer should always be in French
+
+    To answer, please refer to the informations in the documents you can access using the tool "search_in_document".
     """
     sys_message = SystemMessage(content=context)
 
