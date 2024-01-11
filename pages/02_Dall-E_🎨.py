@@ -10,7 +10,7 @@ with cent_co:
         width=200,
     )
 
-st.markdown("# Dall-e")
+st.markdown("# Dall-e 🎨")
 
 
 # we create a conversation with the user to create images using function generate_image_openai

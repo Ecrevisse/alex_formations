@@ -152,7 +152,7 @@ with cent_co:
         Image.open("static/logo-international-white-low_res-scale-2_80x-PhotoRoom.png"),
         width=200,
     )
-st.title("Assistant chatbot")
+st.title("Chatbot 🤖")
 
 st.write("Selectionnez le PDF à analyser")
 
