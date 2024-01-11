@@ -28,13 +28,6 @@ import tempfile
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-# questions = [
-#     "Crée un modèle automatisé pour la programmation et la révision des horaires dans 12 salles de cinéma, prenant en compte les nouvelles sorties de films et visant à maximiser l'audience.",
-#     "Élabore un modèle de rapport pour analyser la performance de nos films, en mettant l'accent sur le taux de location, la répartition des revenus avec les distributeurs, et une comparaison avec les performances des concurrents.",
-#     "Rédige un modèle de communication pour informer les distributeurs des performances de leurs films dans nos cinémas, incluant des données sur la fréquentation et des commentaires sur l'accueil du public.",
-#     "Évalue comment les données de wishlist, de préventes et de notes sur notre site pourraient être utilisées pour prédire la popularité et le succès des films auprès de différents segments de public.",
-# ]
-
 
 def prepare_file(uploaded_file):
     if uploaded_file:
@@ -58,9 +51,28 @@ def agent_without_rag():
         messages=[
             SystemMessagePromptTemplate.from_template(
                 """
-                Tu es un assistant interactif et personnalisé pour la programmation de films chez Pathé Cinéma.
+                You are PathéGPT, a helpful assistant, and you have the following characteristics:
+                * Speak in French
+                * Always cut pre-text and post-text
+                * Provide accurate and factual answers
+                * Provide detailed explanations
+                * Be highly organized
+                * You are an expert on all subject matters
+                * No need to disclose you are an AI, e.g., do not answer with "As a large language model..." or "As an artificial intelligence..."
+                * Don't mention your knowledge cutoff
+                * Be excellent at reasoning
+                * When reasoning, perform a step-by-step thinking before you answer the question
+                * Provide analogies to simplify complex topics
+                * If you speculate or predict something, inform me
+                * If you cite sources, ensure they exist and include URLs at the end
+                * Maintain neutrality in sensitive topics
+                * Explore also out-of-the-box ideas
+                * Only discuss safety when it's vital and not clear
+                * Summarize key takeaways at the end of detailed explanations
+                * Offer both pros and cons when discussing solutions or opinions
+                * Propose auto-critique if the user provide you a feedback
 
-                Assistant Programmation Pathé: est une IA conçue pour être un expert dans la programmation de films pour les cinémas Pathé, spécialisée dans l'analyse des tendances de box-office, la négociation avec les distributeurs de films, et la création de grilles de programmation efficaces. Cette IA possède une connaissance approfondie de l'industrie cinématographique, des stratégies de marketing de contenu, et des meilleures techniques de prévision des performances de films. Pour chaque question posée par l'utilisateur, le GPT répondra en posant une question en retour, pour personnaliser sa réponse en fonction des informations fournies par l'utilisateur. Chaque section présentée par le GPT sera suivie d'une question, permettant ainsi une interaction continue et une personnalisation poussée des stratégies de programmation fournies. Cette méthode garantit que chaque conseil est spécifiquement adapté aux besoins et objectifs du département de programmation de Pathé Cinéma, avec un focus particulier sur l'optimisation des programmations et la gestion efficace des contenus.
+                Remember PathéGPT your answer should always be in French
                 """
             ),
             # The `variable_name` here is what must align with memory
@@ -100,11 +112,11 @@ def rag_tool_openai(filename: str):
     )
 
     context = """
-    Tu es un assistant interactif et personnalisé pour la programmation de films chez Pathé Cinéma.
+    You are an helpful assistant for question-answering and summarizing tasks on PDF. 
 
-    Assistant Programmation Pathé: est une IA conçue pour être un expert dans la programmation de films pour les cinémas Pathé, spécialisée dans l'analyse des tendances de box-office, la négociation avec les distributeurs de films, et la création de grilles de programmation efficaces. Cette IA possède une connaissance approfondie de l'industrie cinématographique, des stratégies de marketing de contenu, et des meilleures techniques de prévision des performances de films. Pour chaque question posée par l'utilisateur, le GPT répondra en posant une question en retour, pour personnaliser sa réponse en fonction des informations fournies par l'utilisateur. Chaque section présentée par le GPT sera suivie d'une question, permettant ainsi une interaction continue et une personnalisation poussée des stratégies de programmation fournies. Cette méthode garantit que chaque conseil est spécifiquement adapté aux besoins et objectifs du département de programmation de Pathé Cinéma, avec un focus particulier sur l'optimisation des programmations et la gestion efficace des contenus.
+    Your task will be to complete the request of the user and using the provided PDF by the user.If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise
 
-    Tu peux chercher les informations dans le document au besoin.
+    Remember it's very important your answer should always be in French
     """
     sys_message = SystemMessage(content=context)
 
@@ -134,18 +146,6 @@ if "messages" not in st.session_state:
 
 st.set_page_config(page_title="Assistant chatbot")
 
-# st.markdown(
-#     """
-# <style>.element-container:has(#button-after) + div button {
-#     height: 150px;
-#     padding-top: 10px !important;
-#     padding-bottom: 10px !important;
-#     backgroundColor: #573666;
-#     textColor: #ffffff;
-#  }</style>""",
-#     unsafe_allow_html=True,
-# )
-
 left_co, cent_co, last_co = st.columns(3)
 with cent_co:
     st.image(
@@ -164,36 +164,26 @@ if "agent" not in st.session_state or (
     )
 ):
     with st.spinner("Preparing agent..."):
+        st.session_state.messages = []
+        st.session_state.start = False
         file_path = None
         if file is not None:
             st.session_state["filename"] = file.name
             file_path = prepare_file(file)
             st.session_state.agent = rag_tool_openai(file_path)
+            st.session_state.messages.append({"role": "assistant", "content": """Quelles actions souhaitez vous faire avec ce PDF ?
+                                                                                 Vous pouvez par exemple demander de le résumer, ou de poser des questions spécifiques. Soyez le plus exhaustif possible !"""})
+
         else:
             st.session_state.agent = agent_without_rag()
-        st.session_state.messages = []
-        st.session_state.start = False
+            st.session_state.messages.append({"role": "assistant", "content": "Bonjour, je suis PathéGPT, quelles actions voulez vous effectuer ? Nous allons entamer une conversation ensemble, soyez le plus exhaustif possible et n’hésitez pas à me donner du feedback régulièrement !"})
+        
 
 # Display chat messages from history on app rerun
 if "messages" in st.session_state:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
-# st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-# if "agent" in st.session_state and st.session_state.start == False:
-#     cols = st.columns(int(len(questions) / 2))
-#     for i, question in enumerate(questions):
-#         if cols[int(i / 2)].button(question):
-#             st.session_state.start = True
-#             with st.chat_message("user"):
-#                 st.markdown(question)
-#             st.session_state.messages.append({"role": "user", "content": question})
-#             response = query(st.session_state.agent, question)
-#             with st.chat_message("assistant"):
-#                 st.markdown(response)
-#             st.session_state.messages.append({"role": "assistant", "content": response})
-#             st.rerun()
 
 response = ""
 # React to user input
