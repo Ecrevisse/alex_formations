@@ -28,12 +28,12 @@ import tempfile
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-questions = [
-    "Crée un modèle automatisé pour la programmation et la révision des horaires dans 12 salles de cinéma, prenant en compte les nouvelles sorties de films et visant à maximiser l'audience.",
-    "Élabore un modèle de rapport pour analyser la performance de nos films, en mettant l'accent sur le taux de location, la répartition des revenus avec les distributeurs, et une comparaison avec les performances des concurrents.",
-    "Rédige un modèle de communication pour informer les distributeurs des performances de leurs films dans nos cinémas, incluant des données sur la fréquentation et des commentaires sur l'accueil du public.",
-    "Évalue comment les données de wishlist, de préventes et de notes sur notre site pourraient être utilisées pour prédire la popularité et le succès des films auprès de différents segments de public.",
-]
+# questions = [
+#     "Crée un modèle automatisé pour la programmation et la révision des horaires dans 12 salles de cinéma, prenant en compte les nouvelles sorties de films et visant à maximiser l'audience.",
+#     "Élabore un modèle de rapport pour analyser la performance de nos films, en mettant l'accent sur le taux de location, la répartition des revenus avec les distributeurs, et une comparaison avec les performances des concurrents.",
+#     "Rédige un modèle de communication pour informer les distributeurs des performances de leurs films dans nos cinémas, incluant des données sur la fréquentation et des commentaires sur l'accueil du public.",
+#     "Évalue comment les données de wishlist, de préventes et de notes sur notre site pourraient être utilisées pour prédire la popularité et le succès des films auprès de différents segments de public.",
+# ]
 
 
 def prepare_file(uploaded_file):
@@ -74,9 +74,6 @@ def agent_without_rag():
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     conversation = LLMChain(llm=llm, prompt=prompt, verbose=True, memory=memory)
     return conversation
-
-    # Notice that we just pass in the `question` variables - `chat_history` gets populated by memory
-    # conversation({"question": "hi"})
 
 
 def rag_tool_openai(filename: str):
@@ -137,24 +134,23 @@ if "messages" not in st.session_state:
 
 st.set_page_config(page_title="Assistant chatbot")
 
-st.markdown(
-    """
-<style>.element-container:has(#button-after) + div button {
-    height: 150px;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    backgroundColor: #573666;
-    textColor: #ffffff;
- }</style>""",
-    unsafe_allow_html=True,
-)
+# st.markdown(
+#     """
+# <style>.element-container:has(#button-after) + div button {
+#     height: 150px;
+#     padding-top: 10px !important;
+#     padding-bottom: 10px !important;
+#     backgroundColor: #573666;
+#     textColor: #ffffff;
+#  }</style>""",
+#     unsafe_allow_html=True,
+# )
 
-# img_col0, _ = st.columns(2)
 left_co, cent_co, last_co = st.columns(3)
 with cent_co:
     st.image(
         Image.open("static/logo-international-white-low_res-scale-2_80x-PhotoRoom.png"),
-        width=300,
+        width=200,
     )
 st.title("Assistant chatbot")
 
@@ -184,20 +180,20 @@ if "messages" in st.session_state:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-if "agent" in st.session_state and st.session_state.start == False:
-    cols = st.columns(int(len(questions) / 2))
-    for i, question in enumerate(questions):
-        if cols[int(i / 2)].button(question):
-            st.session_state.start = True
-            with st.chat_message("user"):
-                st.markdown(question)
-            st.session_state.messages.append({"role": "user", "content": question})
-            response = query(st.session_state.agent, question)
-            with st.chat_message("assistant"):
-                st.markdown(response)
-            st.session_state.messages.append({"role": "assistant", "content": response})
-            st.rerun()
+# st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
+# if "agent" in st.session_state and st.session_state.start == False:
+#     cols = st.columns(int(len(questions) / 2))
+#     for i, question in enumerate(questions):
+#         if cols[int(i / 2)].button(question):
+#             st.session_state.start = True
+#             with st.chat_message("user"):
+#                 st.markdown(question)
+#             st.session_state.messages.append({"role": "user", "content": question})
+#             response = query(st.session_state.agent, question)
+#             with st.chat_message("assistant"):
+#                 st.markdown(response)
+#             st.session_state.messages.append({"role": "assistant", "content": response})
+#             st.rerun()
 
 response = ""
 # React to user input
