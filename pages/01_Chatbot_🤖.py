@@ -51,7 +51,7 @@ def agent_without_rag():
         messages=[
             SystemMessagePromptTemplate.from_template(
                 """
-                You are PathéGPT, a helpful assistant, and you have the following characteristics:
+                You are GaumontGPT, a helpful assistant, and you have the following characteristics:
                 * Speak in French
                 * Always cut pre-text and post-text
                 * Provide accurate and factual answers
@@ -72,7 +72,7 @@ def agent_without_rag():
                 * Offer both pros and cons when discussing solutions or opinions
                 * Propose auto-critique if the user provide you a feedback
 
-                Remember PathéGPT your answer should always be in French
+                Remember GaumontGPT your answer should always be in French
                 """
             ),
             # The `variable_name` here is what must align with memory
@@ -148,12 +148,10 @@ if "messages" not in st.session_state:
 
 st.set_page_config(page_title="Assistant chatbot")
 
-left_co, cent_co, last_co = st.columns(3)
-with cent_co:
-    st.image(
-        Image.open("static/logo-international-white-low_res-scale-2_80x-PhotoRoom.png"),
-        width=200,
-    )
+st.image(
+    Image.open("static/Gaumont_logo.svg.png"),
+    width=400,
+)
 st.title("Chatbot 🤖")
 
 st.write("Selectionnez le PDF à analyser")
@@ -173,13 +171,23 @@ if "agent" not in st.session_state or (
             st.session_state["filename"] = file.name
             file_path = prepare_file(file)
             st.session_state.agent = rag_tool_openai(file_path)
-            st.session_state.messages.append({"role": "assistant", "content": """Quelles actions souhaitez vous faire avec ce PDF ?
-                                                                                 Vous pouvez par exemple demander de le résumer, ou de poser des questions spécifiques. Soyez le plus exhaustif possible !"""})
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": """Quelles actions souhaitez vous faire avec ce PDF ?
+                                                                                 Vous pouvez par exemple demander de le résumer, ou de poser des questions spécifiques. Soyez le plus exhaustif possible !""",
+                }
+            )
 
         else:
             st.session_state.agent = agent_without_rag()
-            st.session_state.messages.append({"role": "assistant", "content": "Bonjour, je suis PathéGPT, quelles actions voulez vous effectuer ? Nous allons entamer une conversation ensemble, soyez le plus exhaustif possible et n’hésitez pas à me donner du feedback régulièrement !"})
-        
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": "Bonjour, je suis GaumontGPT, quelles actions voulez vous effectuer ? Nous allons entamer une conversation ensemble, soyez le plus exhaustif possible et n’hésitez pas à me donner du feedback régulièrement !",
+                }
+            )
+
 
 # Display chat messages from history on app rerun
 if "messages" in st.session_state:

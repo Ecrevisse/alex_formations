@@ -3,12 +3,10 @@ from PIL import Image
 from utils.images_generator import generate_image_openai
 
 
-left_co, cent_co, last_co = st.columns(3)
-with cent_co:
-    st.image(
-        Image.open("static/logo-international-white-low_res-scale-2_80x-PhotoRoom.png"),
-        width=200,
-    )
+st.image(
+    Image.open("static/Gaumont_logo.svg.png"),
+    width=400,
+)
 
 st.markdown("# Dall-e 🎨")
 
