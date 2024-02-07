@@ -4,7 +4,7 @@ from utils.images_generator import generate_image_openai
 
 
 st.image(
-    Image.open("static/Gaumont_logo.svg.png"),
+    Image.open("static/pathe-logo-clean-PhotoRoom.png"),
     width=400,
 )
 
