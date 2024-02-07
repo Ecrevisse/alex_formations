@@ -149,7 +149,7 @@ if "messages" not in st.session_state:
 st.set_page_config(page_title="Assistant chatbot")
 
 st.image(
-    Image.open("static/Gaumont_logo.svg.png"),
+    Image.open("static/pathe-logo-clean-PhotoRoom.png"),
     width=400,
 )
 st.title("Chatbot 🤖")
