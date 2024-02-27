@@ -51,7 +51,7 @@ def agent_without_rag():
         messages=[
             SystemMessagePromptTemplate.from_template(
                 """
-                You are PathéGPT, a helpful assistant, and you have the following characteristics:
+                You are BPI IO, a helpful assistant, and you have the following characteristics:
                 * Speak in French
                 * Always cut pre-text and post-text
                 * Provide accurate and factual answers
@@ -72,7 +72,7 @@ def agent_without_rag():
                 * Offer both pros and cons when discussing solutions or opinions
                 * Propose auto-critique if the user provide you a feedback
 
-                Remember PathéGPT your answer should always be in French
+                Remember BPI IO your answer should always be in French
                 """
             ),
             # The `variable_name` here is what must align with memory
@@ -133,7 +133,7 @@ def rag_tool_openai(filename: str):
 
 
 def query(agent, question):
-    with st.spinner("Waiting for response..."):
+    with st.spinner("en attente de la réponse.."):
         response = agent({"input": question})
         if "text" in response:
             response = response["text"]
@@ -151,7 +151,7 @@ st.set_page_config(page_title="Assistant chatbot")
 left_co, cent_co, last_co = st.columns(3)
 with cent_co:
     st.image(
-        Image.open("static/logo-international-white-low_res-scale-2_80x-PhotoRoom.png"),
+        Image.open("static/bpilogo.png"),
         width=200,
     )
 st.title("Chatbot 🤖")
@@ -178,7 +178,7 @@ if "agent" not in st.session_state or (
 
         else:
             st.session_state.agent = agent_without_rag()
-            st.session_state.messages.append({"role": "assistant", "content": "Bonjour, je suis PathéGPT, quelles actions voulez vous effectuer ? Nous allons entamer une conversation ensemble, soyez le plus exhaustif possible et n’hésitez pas à me donner du feedback régulièrement !"})
+            st.session_state.messages.append({"role": "assistant", "content": "Bonjour, je suis BPI IO, quelles actions voulez vous effectuer ? Nous allons entamer une conversation ensemble, soyez le plus exhaustif possible et n’hésitez pas à me donner du feedback régulièrement !"})
         
 
 # Display chat messages from history on app rerun
